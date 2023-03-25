@@ -66,12 +66,11 @@ docker-down:
 docker-build:
 		docker build -t $(USER)/$(PROJECT):$(VERSION) .
 
-
 docker-run:
 		 docker container run --name $(PROJECT) -it  $(USER)/$(PROJECT):$(VERSION) /bin/bash
 
 
-g-commit: pre-commit-commands
+g-commit: go-tidy
 		git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
 
 g-log:
@@ -86,18 +85,30 @@ dev:
 		CompileDaemon  --command=./serv-auth -verbose --color -exclude-dir=config -exclude-dir=.git
 		rm serv-auth
 
-run:
+all: test build
+
+go-init:
+		$(GO) mod init github.com/mohsenhariri/$(PROJECT)
+
+go-get:
+		$(GO) get  $(filter-out $@,$(MAKECMDGOALS))
+
+go-tidy:
+		$(GO) mod tidy
+
+go-run:
 		$(GO) run main.go
 
-build:
+go-build:
 		$(GO) build -o $(BUILD)/main main.go
 
+go-run-bin:
+		$(BUILD)/main
+
 # https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63
-compile:
-		echo "Compiling for every OS and Platform"
+go-compile:
+		@echo "Compiling for every OS and Platform"
 		GOOS=linux GOARCH=arm go build -o bin/main-linux-arm main.go
 		GOOS=linux GOARCH=arm64 go build -o bin/main-linux-arm64 main.go
 		GOOS=freebsd GOARCH=386 go build -o bin/main-freebsd-386 main.go
 		GOOS=windows GOARCH=386 go build -o bin/main-windows-386 main.go
-
-all: test build
