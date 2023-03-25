@@ -32,8 +32,6 @@
 
 # Exclude files and directories not needed for the Docker image
 .git
-.env
-/vendor
 *.log
 *.out
 *.test
