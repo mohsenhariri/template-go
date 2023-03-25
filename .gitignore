@@ -1,15 +1,32 @@
-# Binaries for programs and plugins
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Compiled Go binary files
 *.exe
 *.exe~
-*.dll
-*.so
+*.test
+*.out
 *.dylib
 
-# Test binary, built with `go test -c`
-*.test
+# Compiled Golang packages
+*.pkg
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# Output of the go coverage tool
+*.cover
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Output of the go tool trace
+*.trace
+
+# Go coverage profile
+*.prof
+
+# Binary file for Go source
+*.bin
+
+# Vendor directory
+/vendor/
+
+# Environment file
+.env

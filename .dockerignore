@@ -1,0 +1,42 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Compiled Go binary files
+*.exe
+*.exe~
+*.test
+*.out
+
+# Compiled Golang packages
+*.pkg
+
+# Output of the go coverage tool
+*.cover
+
+# Output of the go tool trace
+*.trace
+
+# Go coverage profile
+*.prof
+
+# Binary file for Go source
+*.bin
+
+# Vendor directory
+/vendor/
+
+# Environment file
+.env
+
+# Exclude files and directories not needed for the Docker image
+.git
+.env
+/vendor
+*.log
+*.out
+*.test
+*.prof
+*.cover
+*.trace
