@@ -4,6 +4,7 @@
 *.so
 
 # Compiled Go binary files
+bin
 *.exe
 *.exe~
 *.test
