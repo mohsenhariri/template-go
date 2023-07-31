@@ -19,6 +19,7 @@ SRC := src
 DIST := dist
 BUILD := bin
 CERTS := .certs
+CONFIG := config
 
 ifeq ($(SSL), true)
 PROTOCOL := HTTPS
@@ -50,37 +51,6 @@ test:
 		@echo "ENV: $(ENV)"
 		@echo $(VERSION)
 		@echo $(USER)
-
-init-db-postgres:
-		docker run -d \
-		--name ${PROJECT}-postgres \
-		-e POSTGRES_USER=user \
-		-e POSTGRES_PASSWORD=123 \
-		-e POSTGRES_DB=pdb \
-		-p ${PORT_POSTGRES}:5432 \
-		-v $(HOME)/github/serv-auth/config/volumes/postgres:/var/lib/postgresql/data \
-		postgres
-
-init-db-redis:
-		docker run -d \
-		--name ${PROJECT}-redis \
-		-p ${PORT_REDIS}:6379 \
-		redis
-
-init: init-db-postgres init-db-redis
-
-docker-up:
-		docker compose -p $(PROJECT) --env-file ./config/.env.docker -f ./config/compose.yaml up -d
-
-docker-down:
-		docker compose -p $(PROJECT) -f ./config/compose.yaml down
-
-docker-build:
-		docker build -t $(USER)/$(PROJECT):$(VERSION) .
-
-docker-run:
-		 docker container run --name $(PROJECT) -it  $(USER)/$(PROJECT):$(VERSION) /bin/bash
-
 
 g-commit: go-tidy
 		git commit -m "$(filter-out $@,$(MAKECMDGOALS))"
