@@ -30,4 +30,6 @@ bin
 /vendor/
 
 # Environment file
-.env
+# .env.*
+
+certs

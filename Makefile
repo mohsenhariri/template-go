@@ -1,25 +1,24 @@
 # https://www.gnu.org/software/make/manual/make.html
-include .env
+ENV := dev # default, other options: test, prod
+
+include .env.$(ENV)
 export
 
 include *.make
 
-PATH := $(HOME)/go/bin:$(PATH)
+WORKDIR := $(shell pwd)
+VERSION := $(shell cat VERSION)
+PROJECT ?= $(shell basename $(CURDIR))
+USER ?= $(USER)
 
-ifneq ("$(wildcard /usr/local/go/bin/go)","")
-    GO := /usr/local/go/bin/go
-else
-    GO := $(HOME)/compiler/go/1191/go/bin/go 
-endif
-
+GO := go
 DOCKER := /usr/bin/docker 
 CURL := /usr/bin/curl
 
 SRC := src
 DIST := dist
 BUILD := bin
-
-.PHONY: env test all dev clean dev $(SRC) $(DIST) $(BUILD)
+CERTS := certs
 
 ifeq ($(SSL), true)
 PROTOCOL := HTTPS
@@ -28,16 +27,29 @@ PROTOCOL := HTTP
 endif
 URL := $(PROTOCOL)://$(HOST):$(PORT)
 
+.PHONY: env test all dev clean dev $(SRC) $(DIST) $(BUILD)
+.DEFAULT_GOAL := test
 .ONESHELL:
 
 %: # https://www.gnu.org/software/make/manual/make.html#Automatic-Variables 
 		@:
 		
 cert: # HTTPS server
-		if [ ! -d "./certs" ]; then mkdir ./certs; fi
-		if [ -f "./certs/openssl.conf" ] ; then \
-		openssl req -x509 -new -config ./certs/openssl.conf -out ./certs/cert.pem -keyout ./certs/key.pem ;  else \
-		openssl req -x509 -nodes -newkey rsa:4096 -out ./certs/cert.pem -keyout ./certs/key.pem -sha256 -days 365 ;fi
+		if [ ! -d "$(CERTS)" ]; then mkdir $(CERTS); fi
+		if [ -f "$(CERTS)/openssl.conf" ] ; then \
+		openssl req -x509 -new -config $(CERTS)/openssl.conf -out $(CERTS)/cert.pem -keyout $(CERTS)/key.pem ;  else \
+		openssl req -x509 -nodes -newkey rsa:4096 -out $(CERTS)/cert.pem -keyout $(CERTS)/key.pem -sha256 -days 365 ;fi
+
+switch-env:
+		sed -i 's/ENV := dev/ENV := $(filter-out $@,$(MAKECMDGOALS))/' Makefile
+
+test:
+		$(DOCKER) version
+		$(GO) version
+		$(CURL) --version
+		@echo "ENV: $(ENV)"
+		@echo $(VERSION)
+		@echo $(USER)
 
 init-db-postgres:
 		docker run -d \
@@ -75,11 +87,6 @@ g-commit: go-tidy
 
 g-log:
 		git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-
-test:
-		$(DOCKER) version
-		$(GO) version
-		$(CURL) --version
 
 dev:
 		CompileDaemon  --command=./serv-auth -verbose --color -exclude-dir=config -exclude-dir=.git

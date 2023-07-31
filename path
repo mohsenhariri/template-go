@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Go path setup
+# https://go.dev/doc/gopath_code
+export GOROOT=~/apps/go  # point to the go installation directory
+export GOPATH=~/go
+export GOBIN=$GOPATH/bin
+export PATH="$PATH:$GOROOT/bin:$GOBIN"
