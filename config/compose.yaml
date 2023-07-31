@@ -1,0 +1,75 @@
+# https://github.com/compose-spec/compose-spec/blob/master/spec.md
+
+###################
+# Services
+###################
+
+services:
+  ###################
+  # MongoDB
+  ###################
+  db-mongo:
+    container_name: mongo-bp
+    image: mongo
+    volumes:
+      - ./volumes/mongo:/data/db
+    networks:
+      - net-bp
+    ports:
+      - ${PORT_MONGO}:27017
+    restart: on-failure # always
+
+  ###################
+  # PostgreSQL
+  ###################
+  db-postgres:
+    container_name: postgres-bp
+    image: postgres
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+    networks:
+      - net-bp
+    ports:
+      - ${PORT_POSTGRES}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    restart: on-failure # always
+
+  ###################
+  # Redis
+  ###################
+  db-redis:
+    container_name: redis-bp
+    image: redis
+    networks:
+      - net-bp
+    ports:
+      - ${PORT_REDIS}:6379
+    restart: on-failure
+
+  ###################
+  # pgAdmin
+  ###################
+  db-pgadmin:
+    container_name: pgadmin-bp
+    image: dpage/pgadmin4
+    volumes:
+      - ./volumes/pgadmin:/var/lib/pgadmin
+    networks:
+      - net-bp
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - ${PORT_PGADMIN}:80
+
+###################
+# networks
+# net-bp
+###################
+networks:
+  net-bp:
+    # network name
+    driver: bridge

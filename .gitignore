@@ -32,4 +32,7 @@ bin
 # Environment file
 # .env.*
 
-.certs
+.certs/
+!.certs/openssl.conf
+
+config/volumes/
