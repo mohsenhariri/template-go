@@ -28,7 +28,7 @@
 /vendor/
 
 # Environment file
-.env
+# .env
 
 # Exclude files and directories not needed for the Docker image
 .git
@@ -38,3 +38,5 @@
 *.prof
 *.cover
 *.trace
+
+.certs

@@ -32,4 +32,4 @@ bin
 # Environment file
 # .env.*
 
-certs
+.certs

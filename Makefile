@@ -18,7 +18,7 @@ CURL := /usr/bin/curl
 SRC := src
 DIST := dist
 BUILD := bin
-CERTS := certs
+CERTS := .certs
 
 ifeq ($(SSL), true)
 PROTOCOL := HTTPS
